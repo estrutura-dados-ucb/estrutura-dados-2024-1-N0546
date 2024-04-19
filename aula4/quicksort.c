@@ -27,7 +27,10 @@ int partition(int *vetor, int esq, int dir){
         
 
         if(i >= j){
-            // retornando o pivô para a função quicksort
+            // retornando a posição
+            // que divide vetor em duas partes
+            // elementos da parte esquerda < pivô
+            // elementos da parte direita >= pivô
             return j;
         }
 
@@ -47,7 +50,7 @@ int partition(int *vetor, int esq, int dir){
 
 void quicksort(int* vetor, int esq, int dir){
     if(esq >= 0 && dir >= 0 && esq < dir){
-        // selecionar um pivô
+        // selecionar um ponto de quebra
         int p = partition(vetor, esq, dir);
         printf("Returned pivot position: %d\n", p);
         printf("-----------------------------------------\n");
@@ -56,18 +59,18 @@ void quicksort(int* vetor, int esq, int dir){
         }
         printf("\n-----------------------------------------\n");
 
-        // chamar o quicksort com elementos a direita do pivô
-        quicksort(vetor, esq, pivot);
+        // chamar o quicksort com elementos a direita de p
+        quicksort(vetor, esq, p);
  
-        // chamar o quicksirt com elementos a esquerda do pivô
-        quicksort(vetor, pivot + 1, dir);
+        // chamar o quicksirt com elementos a esquerda de p
+        quicksort(vetor, p + 1, dir);
     }
 }
 
 
 
 int main(){
-    int vetor[] = {5, 1, 2, 10, 8, 7, 6, 3, 9, 4};
+    int vetor[] = {36, 34, 43, 11, 15, 20, 28, 45, 27, 32};
 
     quicksort(vetor, 0, 9);
     for(int i = 0; i<10;i++){

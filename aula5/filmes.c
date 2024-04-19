@@ -3,7 +3,6 @@
 #include "filmes.h"
 #define MAX 50
 
-
 typedef struct Filme {
     char nome[50];
     int anoLancamento;
@@ -17,7 +16,10 @@ typedef struct ListaFilmes {
 
 int partition(ListaFilmes *vetor, int esq, int dir){
     char pivot[50];
+
+    // pivô vai ser elemento mais a esquerda
     strcpy(pivot, vetor->filmes[esq].nome);
+
     // indicador de elementos a esquerda
     int i = esq - 1;
 
@@ -34,7 +36,11 @@ int partition(ListaFilmes *vetor, int esq, int dir){
         }while(strcmp(vetor->filmes[j].nome, pivot) > 0);
 
         if(i >= j){
-            // retornando o pivô para a função quicksort
+            // retornando a posição
+            // que divide vetor em duas partes
+            // elementos da parte esquerda < pivô
+            // elementos da parte direita >= pivô
+
             return j;
         }
 
@@ -47,14 +53,14 @@ int partition(ListaFilmes *vetor, int esq, int dir){
 
 void quicksort(ListaFilmes* vetor, int esq, int dir){
     if(esq >= 0 && dir >= 0 && esq < dir){
-        // selecionar um pivô
-        int pivot = partition(vetor, esq, dir);
+        // selecionar um novo valor para direita
+        int p = partition(vetor, esq, dir);
 
-        // chamar o quicksort com elementos a direita do pivô
-        quicksort(vetor, esq, pivot);
+        // chamar o quicksort com elementos a direita de p
+        quicksort(vetor, esq, p);
  
-        // chamar o quicksirt com elementos a esquerda do pivô
-        quicksort(vetor, pivot + 1, dir);
+        // chamar o quicksort com elementos a esquerda de p
+        quicksort(vetor, p + 1, dir);
     }
 }
 
@@ -104,6 +110,7 @@ int buscaBinaria(ListaFilmes *lista, char* nomeFilme, int esq, int dir){
 
 int main(){
     ListaFilmes lista;
+
     criaLista(&lista);
     Filme filme1, filme2, filme3, filme4;
     strcpy(filme1.nome, "duna 2");
