@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 #include "filmes.h"
 
 typedef struct NoFilme {
@@ -11,17 +12,17 @@ typedef struct NoFilme {
 
 NoFilme *head = NULL;
 
-void criarLista(NoFilme* filme){
-    head = filme;
-    filme->proxFilme = NULL;
+void criarLista(NoFilme** filme){
+    head = *filme;
+    (*filme)->proxFilme = NULL;
 }
 
-void adicionarFilme(NoFilme *filme){
+void adicionarFilme(NoFilme** filme){
     if(head == NULL){
         criarLista(filme);
     } else {
-        filme->proxFilme = head;
-        head = filme;
+        (*filme)->proxFilme = head;
+        head = *filme;
     }
 }
 
@@ -42,18 +43,20 @@ void listarFilmes(){
 
         filmeAtual = filmeAtual->proxFilme;
     }
-		printf("==================================================\n");
+		printf("==================================================\n\n\n");
 }
 
 int removerFilme(char* nomeFilme){
+		printf("Removendo %s...\n\n\n", nomeFilme);
+    NoFilme* filmeAtual = head;
     // se filme que é pra ser removido é o primeiro
     if(strcmp(head->nome, nomeFilme) == 0){
         head = head->proxFilme;
+        free(filmeAtual);
         return 1;
     }
     else {
 
-        NoFilme* filmeAtual = head;
         NoFilme* filmeAposFilmeAtual = head->proxFilme;
 				
         while(filmeAposFilmeAtual != NULL){
@@ -62,6 +65,7 @@ int removerFilme(char* nomeFilme){
             if(strcmp(filmeAposFilmeAtual->nome, nomeFilme) == 0){
                 NoFilme* proxFilme = filmeAposFilmeAtual->proxFilme;
                 filmeAtual->proxFilme = proxFilme;
+                free(filmeAposFilmeAtual);
                 return 1;
 
             }
@@ -73,30 +77,55 @@ int removerFilme(char* nomeFilme){
     return 0;
 }
 
+int buscarFilme(char* nomeFilme){
+    NoFilme* filmeAtual = head;
+    printf("Buscando por \"%s\"...\n", nomeFilme);
+    while(filmeAtual != NULL){
+        if(strcmp(filmeAtual->nome, nomeFilme) == 0){
+          printf("Filme encontrado!\n");
+          printf("Informacoes:\n");
+          printf("nome do filme: %s\n", filmeAtual->nome);
+          printf("diretor(a) do filme: %s\n", filmeAtual->diretor);
+          printf("ano de lancamento do filme: %d\n\n\n",filmeAtual->anoLancamento);
+          return 1;
+        }
+        filmeAtual = filmeAtual->proxFilme;
+    }
+  
+    printf("\"%s\" nao encontrado!\n\n\n", nomeFilme);
+    return 0;
+}
+
 int main(){
 
-    NoFilme filme1, filme2, filme3;
-    strcpy(filme1.nome, "Senhor dos Anéis");
-    filme1.anoLancamento = 2002;
-    strcpy(filme1.diretor, "Peter Jackson");
+    NoFilme *filme1, *filme2, *filme3;
+		filme1 = (NoFilme*) malloc(sizeof(NoFilme));
+		filme2 = (NoFilme*) malloc(sizeof(NoFilme));
+		filme3 = (NoFilme*) malloc(sizeof(NoFilme));
+
+    strcpy(filme1->nome, "Senhor dos Anéis");
+    filme1->anoLancamento = 2002;
+    strcpy(filme1->diretor, "Peter Jackson");
     adicionarFilme(&filme1);
 
-
-    strcpy(filme2.nome, "As branquelas");
-    filme2.anoLancamento = 2004;
-    strcpy(filme2.diretor, "Keenen Ivory Wayans");
+    strcpy(filme2->nome, "As branquelas");
+    filme2->anoLancamento = 2004;
+    strcpy(filme2->diretor, "Keenen Ivory Wayans");
     adicionarFilme(&filme2);
 
     
-    strcpy(filme3.nome, "Carros");
-    filme3.anoLancamento = 2005;
-    strcpy(filme3.diretor, "......");
+    strcpy(filme3->nome, "Carros");
+    filme3->anoLancamento = 2005;
+    strcpy(filme3->diretor, "......");
     adicionarFilme(&filme3);
 
     listarFilmes();
     removerFilme("Senhor dos Anéis");
-    printf("==============================================\n");
     listarFilmes();
+
+		buscarFilme("Free Solo");
+		buscarFilme("Carros");
+
 
     return 0;
 }
